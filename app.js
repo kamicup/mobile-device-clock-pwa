@@ -120,6 +120,18 @@
     return date.getUTCFullYear() + "/" + pad(date.getUTCMonth() + 1) + "/" + pad(date.getUTCDate());
   }
 
+  function weekendClass(dayIndex) {
+    if (dayIndex === 0) {
+      return " is-sunday";
+    }
+
+    if (dayIndex === 6) {
+      return " is-saturday";
+    }
+
+    return "";
+  }
+
   function sameDay(a, b) {
     return a.getFullYear() === b.getFullYear() &&
       a.getMonth() === b.getMonth() &&
@@ -157,7 +169,7 @@
     for (i = 0; i < 7; i += 1) {
       weekdayIndex = (firstDay + i) % 7;
       weekdayEl = document.createElement("div");
-      weekdayEl.className = "weekday";
+      weekdayEl.className = "weekday" + weekendClass(weekdayIndex);
       weekdayEl.textContent = formatWeekdayShort(weekdayIndex);
       calendarWeekdaysEl.appendChild(weekdayEl);
     }
@@ -165,7 +177,7 @@
     for (i = 0; i < cells; i += 1) {
       cellDate = new Date(year, month, i - leadDays + 1);
       dayEl = document.createElement("div");
-      dayEl.className = "day";
+      dayEl.className = "day" + weekendClass(cellDate.getDay());
       dayEl.textContent = String(cellDate.getDate());
 
       if (cellDate.getMonth() !== month) {

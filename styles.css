@@ -10,6 +10,8 @@
   --cyan: #66e8ff;
   --lime: #b7f36a;
   --amber: #ffcc66;
+  --saturday: #74b9ff;
+  --sunday: #ff8f7a;
   --today-bg: rgba(102, 232, 255, 0.17);
 }
 
@@ -193,9 +195,27 @@ body {
   font-weight: 700;
 }
 
+.weekday.is-saturday,
+.day.is-saturday {
+  color: var(--saturday);
+}
+
+.weekday.is-sunday,
+.day.is-sunday {
+  color: var(--sunday);
+}
+
 .day.is-outside {
   color: rgba(158, 172, 192, 0.3);
   background: rgba(255, 255, 255, 0.025);
+}
+
+.day.is-outside.is-saturday {
+  color: rgba(116, 185, 255, 0.34);
+}
+
+.day.is-outside.is-sunday {
+  color: rgba(255, 143, 122, 0.34);
 }
 
 .day.is-today {
@@ -203,6 +223,18 @@ body {
   background: var(--today-bg);
   color: var(--cyan);
   box-shadow: inset 0 0 0 1px rgba(102, 232, 255, 0.12);
+}
+
+.day.is-today.is-sunday {
+  border-color: rgba(255, 143, 122, 0.82);
+  background: rgba(255, 143, 122, 0.16);
+  color: #ffb1a3;
+}
+
+.day.is-today.is-saturday {
+  border-color: rgba(116, 185, 255, 0.82);
+  background: rgba(116, 185, 255, 0.16);
+  color: #a9d4ff;
 }
 
 .gmt-panel {
