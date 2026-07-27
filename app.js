@@ -27,6 +27,10 @@
     document.documentElement.style.setProperty("--paint-height", appHeight + 360 + "px");
   }
 
+  function preventZoom(event) {
+    event.preventDefault();
+  }
+
   function getLocale() {
     if (navigator.languages && navigator.languages.length) {
       return navigator.languages[0];
@@ -210,6 +214,9 @@
   window.addEventListener("orientationchange", function () {
     window.setTimeout(setAppHeight, 250);
   });
+  document.addEventListener("gesturestart", preventZoom);
+  document.addEventListener("gesturechange", preventZoom);
+  document.addEventListener("gestureend", preventZoom);
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
