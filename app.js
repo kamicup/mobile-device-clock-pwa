@@ -16,7 +16,15 @@
   };
 
   function setAppHeight() {
-    document.documentElement.style.setProperty("--app-height", window.innerHeight + "px");
+    var width = window.innerWidth || document.documentElement.clientWidth || screen.width || 0;
+    var height = window.innerHeight || document.documentElement.clientHeight || screen.height || 0;
+    var screenLongSide = Math.max(screen.width || 0, screen.height || 0);
+    var screenShortSide = Math.min(screen.width || 0, screen.height || 0);
+    var screenHeight = width > height ? screenShortSide : screenLongSide;
+    var appHeight = Math.max(height, screenHeight);
+
+    document.documentElement.style.setProperty("--app-height", appHeight + "px");
+    document.documentElement.style.setProperty("--paint-height", appHeight + 360 + "px");
   }
 
   function getLocale() {

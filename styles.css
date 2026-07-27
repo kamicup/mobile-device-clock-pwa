@@ -1,5 +1,6 @@
 :root {
   --app-height: 100vh;
+  --paint-height: 140vh;
   --bg: #070a0f;
   --panel: rgba(17, 24, 36, 0.76);
   --panel-soft: rgba(255, 255, 255, 0.055);
@@ -22,40 +23,37 @@ body {
   height: 100%;
   min-height: 100%;
   overflow: hidden;
+  background: var(--bg) !important;
 }
 
 html {
-  background: var(--bg);
+  background-color: var(--bg) !important;
 }
 
 body {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
+  position: relative;
   margin: 0;
-  height: var(--app-height);
+  height: 100%;
   min-height: 100vh;
-  min-height: var(--app-height);
+  min-height: var(--paint-height);
   overflow: hidden;
-  background: var(--bg);
+  background-color: var(--bg) !important;
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
 }
 
-body::before {
-  content: "";
+.app-background {
   position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  width: 100%;
-  height: var(--app-height);
+  top: -160px;
+  right: -48px;
+  bottom: -360px;
+  left: -48px;
+  min-height: var(--paint-height);
   z-index: 0;
   pointer-events: none;
+  background-color: var(--bg);
   background:
     radial-gradient(circle at 50% -18%, rgba(102, 232, 255, 0.16), transparent 34rem),
     linear-gradient(180deg, #090d14 0%, var(--bg) 54%, #05070b 100%);
@@ -66,7 +64,6 @@ body::before {
   z-index: 1;
   width: 100%;
   max-width: 30rem;
-  height: var(--app-height);
   min-height: 100vh;
   min-height: -webkit-fill-available;
   min-height: var(--app-height);
