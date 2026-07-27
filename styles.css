@@ -17,26 +17,48 @@
 
 html,
 body {
+  height: 100%;
   min-height: 100%;
 }
 
+html {
+  background: var(--bg);
+}
+
 body {
+  position: relative;
   margin: 0;
-  background:
-    radial-gradient(circle at 50% -18%, rgba(102, 232, 255, 0.16), transparent 34rem),
-    linear-gradient(180deg, #090d14 0%, var(--bg) 54%, #05070b 100%);
+  min-height: 100vh;
+  background: var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   letter-spacing: 0;
   -webkit-font-smoothing: antialiased;
 }
 
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% -18%, rgba(102, 232, 255, 0.16), transparent 34rem),
+    linear-gradient(180deg, #090d14 0%, var(--bg) 54%, #05070b 100%);
+}
+
 .shell {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 30rem;
   min-height: 100vh;
   min-height: -webkit-fill-available;
   margin: 0 auto;
+  padding: calc(constant(safe-area-inset-top) + 1rem) 0.88rem calc(constant(safe-area-inset-bottom) + 1rem);
   padding: calc(env(safe-area-inset-top) + 1rem) 0.88rem calc(env(safe-area-inset-bottom) + 1rem);
   display: flex;
   flex-direction: column;
@@ -220,6 +242,8 @@ body {
 
 @media (max-height: 620px) {
   .shell {
+    padding-top: calc(constant(safe-area-inset-top) + 0.65rem);
+    padding-bottom: calc(constant(safe-area-inset-bottom) + 0.65rem);
     padding-top: calc(env(safe-area-inset-top) + 0.65rem);
     padding-bottom: calc(env(safe-area-inset-bottom) + 0.65rem);
   }
