@@ -15,6 +15,10 @@
     renderedMonthKey: ""
   };
 
+  function setAppHeight() {
+    document.documentElement.style.setProperty("--app-height", window.innerHeight + "px");
+  }
+
   function getLocale() {
     if (navigator.languages && navigator.languages.length) {
       return navigator.languages[0];
@@ -179,8 +183,13 @@
     renderCalendar(now);
   }
 
+  setAppHeight();
   tick();
   window.setInterval(tick, 1000);
+  window.addEventListener("resize", setAppHeight);
+  window.addEventListener("orientationchange", function () {
+    window.setTimeout(setAppHeight, 250);
+  });
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
