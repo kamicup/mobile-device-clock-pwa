@@ -1,0 +1,274 @@
+:root {
+  --bg: #070a0f;
+  --panel: rgba(17, 24, 36, 0.76);
+  --panel-soft: rgba(255, 255, 255, 0.055);
+  --line: rgba(158, 176, 198, 0.18);
+  --text: #f4f7fb;
+  --muted: #9eacc0;
+  --cyan: #66e8ff;
+  --lime: #b7f36a;
+  --amber: #ffcc66;
+  --today-bg: rgba(102, 232, 255, 0.17);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 50% -18%, rgba(102, 232, 255, 0.16), transparent 34rem),
+    linear-gradient(180deg, #090d14 0%, var(--bg) 54%, #05070b 100%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  width: 100%;
+  max-width: 30rem;
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 1rem) 0.88rem calc(env(safe-area-inset-bottom) + 1rem);
+  display: flex;
+  flex-direction: column;
+}
+
+.shell > * + * {
+  margin-top: 0.75rem;
+}
+
+.date-panel,
+.time-panel,
+.calendar-panel,
+.gmt-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.36);
+  overflow: hidden;
+}
+
+.date-panel {
+  min-height: 5.15rem;
+  padding: 1rem 1rem 0.9rem;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.local-date {
+  min-width: 0;
+  font-size: 1.32rem;
+  font-weight: 700;
+  line-height: 1.08;
+  white-space: nowrap;
+}
+
+.local-weekday {
+  flex: 0 0 auto;
+  color: var(--cyan);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.time-panel {
+  min-height: 7.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    linear-gradient(135deg, rgba(102, 232, 255, 0.12), transparent 56%),
+    var(--panel);
+}
+
+.local-time {
+  font-size: 3.52rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+  text-shadow: 0 0 1.25rem rgba(102, 232, 255, 0.2);
+}
+
+.calendar-panel {
+  padding: 0.78rem;
+}
+
+.calendar-head {
+  min-height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0.15rem 0.35rem;
+}
+
+.calendar-title {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.28rem;
+  grid-gap: 0.28rem;
+}
+
+.calendar-weekdays {
+  margin-bottom: 0.32rem;
+}
+
+.weekday,
+.day {
+  aspect-ratio: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.weekday {
+  height: 1.25rem;
+  aspect-ratio: auto;
+  color: var(--muted);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.day {
+  border: 1px solid transparent;
+  background: var(--panel-soft);
+  color: var(--text);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.day.is-outside {
+  color: rgba(158, 172, 192, 0.3);
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.day.is-today {
+  border-color: rgba(102, 232, 255, 0.75);
+  background: var(--today-bg);
+  color: var(--cyan);
+  box-shadow: inset 0 0 0 1px rgba(102, 232, 255, 0.12);
+}
+
+.gmt-panel {
+  min-height: 4.35rem;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.gmt-label {
+  color: var(--amber);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.gmt-value {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
+.gmt-date {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.gmt-time {
+  color: var(--lime);
+  font-size: 1.84rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+@supports not (aspect-ratio: 1) {
+  .day {
+    height: 1.95rem;
+  }
+}
+
+@media (max-height: 620px) {
+  .shell {
+    padding-top: calc(env(safe-area-inset-top) + 0.65rem);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.65rem);
+  }
+
+  .shell > * + * {
+    margin-top: 0.5rem;
+  }
+
+  .date-panel {
+    min-height: 4.25rem;
+    padding: 0.78rem 0.85rem;
+  }
+
+  .time-panel {
+    min-height: 5.6rem;
+  }
+
+  .calendar-panel {
+    padding: 0.58rem;
+  }
+
+  .gmt-panel {
+    min-height: 3.65rem;
+    padding: 0.65rem 0.85rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .gmt-value {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25rem;
+  }
+
+  .gmt-date {
+    font-size: 0.76rem;
+  }
+}
+
+@media (min-width: 380px) {
+  .local-date {
+    font-size: 1.55rem;
+  }
+
+  .local-time {
+    font-size: 4.28rem;
+  }
+
+  .gmt-time {
+    font-size: 2.18rem;
+  }
+}
