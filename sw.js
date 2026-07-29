@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var CACHE_NAME = "mobile-clock-v9";
+  var CACHE_NAME = "mobile-clock-v10";
   var ASSETS = [
     "./",
     "./index.html",
@@ -42,19 +42,30 @@
       return;
     }
 
-    event.respondWith(
-      caches.match(event.request).then(function (cached) {
-        if (cached) {
-          return cached;
-        }
-
-        return fetch(event.request).then(function (response) {
+    if (event.request.mode === "navigate") {
+      event.respondWith(
+        fetch(event.request).then(function (response) {
           var copy = response.clone();
           caches.open(CACHE_NAME).then(function (cache) {
-            cache.put(event.request, copy);
+            cache.put("./index.html", copy);
           });
           return response;
+        }).catch(function () {
+          return caches.match("./index.html");
+        })
+      );
+      return;
+    }
+
+    event.respondWith(
+      fetch(event.request).then(function (response) {
+        var copy = response.clone();
+        caches.open(CACHE_NAME).then(function (cache) {
+          cache.put(event.request, copy);
         });
+        return response;
+      }).catch(function () {
+        return caches.match(event.request);
       })
     );
   });

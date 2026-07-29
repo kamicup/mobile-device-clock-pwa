@@ -110,7 +110,8 @@
     saveAppointment(null);
     document.body.classList.remove("is-alerting");
     appointmentPanelEl.classList.remove("has-appointment");
-    appointmentStatusEl.hidden = true;
+    appointmentStatusEl.setAttribute("hidden", "hidden");
+    appointmentStatusEl.setAttribute("aria-hidden", "true");
     appointmentTimeEl.value = "";
     appointmentMessageEl.textContent = "予定時刻を登録してください";
   }
@@ -121,7 +122,10 @@
       return;
     }
     appointmentPanelEl.classList.add("has-appointment");
-    appointmentStatusEl.hidden = false;
+    // removeAttribute is used instead of assigning the hidden property so the
+    // state is reflected reliably by older WebKit versions used by the PWA.
+    appointmentStatusEl.removeAttribute("hidden");
+    appointmentStatusEl.setAttribute("aria-hidden", "false");
     appointmentDateEl.textContent = formatAppointment(new Date(state.appointmentTime));
     remaining = state.appointmentTime - now.getTime();
     appointmentCountdownEl.textContent = formatRemaining(remaining);
@@ -327,6 +331,12 @@
   window.addEventListener("resize", setAppHeight);
   window.addEventListener("orientationchange", function () {
     window.setTimeout(setAppHeight, 250);
+  });
+  window.addEventListener("pageshow", tick);
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+      tick();
+    }
   });
   document.addEventListener("gesturestart", preventZoom);
   document.addEventListener("gesturechange", preventZoom);
