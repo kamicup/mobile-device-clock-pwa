@@ -182,11 +182,28 @@ body.is-alerting {
   cursor: pointer;
 }
 
+body.is-alerting::before {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  pointer-events: none;
+  content: "";
+  background-color: rgba(255, 59, 48, 0.58);
+  -webkit-animation: appointment-alert-overlay 0.7s steps(1, end) infinite;
+  animation: appointment-alert-overlay 0.7s steps(1, end) infinite;
+}
+
 body.is-alerting .app-background {
+  -webkit-animation: appointment-alert 0.7s steps(1, end) infinite;
   animation: appointment-alert 0.7s steps(1, end) infinite;
 }
 
 body.is-alerting .appointment-panel {
+  position: relative;
+  z-index: 3;
   border-color: var(--alert);
 }
 
@@ -200,8 +217,20 @@ body.is-alerting .appointment-date::after {
   50% { background: #070a0f; }
 }
 
+@-webkit-keyframes appointment-alert-overlay {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes appointment-alert-overlay {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  body.is-alerting::before,
   body.is-alerting .app-background {
+    -webkit-animation-duration: 1.4s;
     animation-duration: 1.4s;
   }
 }
