@@ -25,6 +25,14 @@
         <div id="local-time" class="local-time">--:--:--</div>
       </section>
 
+      <section class="gmt-panel" aria-label="現在のGMT時刻">
+        <div class="gmt-label">GMT</div>
+        <div class="gmt-value">
+          <div id="gmt-date" class="gmt-date">----</div>
+          <div id="gmt-time" class="gmt-time">--:--:--</div>
+        </div>
+      </section>
+
       <section id="appointment-panel" class="appointment-panel" aria-label="次の予定">
         <form id="appointment-form" class="appointment-form">
           <label class="appointment-label" for="appointment-time">次の予定</label>
@@ -51,13 +59,6 @@
         <div id="calendar-grid" class="calendar-grid"></div>
       </section>
 
-      <section class="gmt-panel" aria-label="現在のGMT時刻">
-        <div class="gmt-label">GMT</div>
-        <div class="gmt-value">
-          <div id="gmt-date" class="gmt-date">----</div>
-          <div id="gmt-time" class="gmt-time">--:--:--</div>
-        </div>
-      </section>
     </main>
 
     <script src="./app.js"></script>
