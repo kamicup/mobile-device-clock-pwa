@@ -13,6 +13,7 @@
   --saturday: #74b9ff;
   --sunday: #ff8f7a;
   --today-bg: rgba(102, 232, 255, 0.17);
+  --alert: #ff3b30;
 }
 
 * {
@@ -91,6 +92,7 @@ body {
 
 .date-panel,
 .time-panel,
+.appointment-panel,
 .calendar-panel,
 .gmt-panel {
   border: 1px solid var(--line);
@@ -98,6 +100,109 @@ body {
   background: var(--panel);
   box-shadow: 0 1.4rem 4rem rgba(0, 0, 0, 0.36);
   overflow: hidden;
+}
+
+.appointment-panel {
+  min-height: 5rem;
+  padding: 0.7rem 0.8rem;
+}
+
+.appointment-label,
+.appointment-date {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.appointment-controls {
+  display: flex;
+  gap: 0.45rem;
+  margin-top: 0.4rem;
+}
+
+.appointment-input {
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.5rem 0.55rem;
+  background: rgba(0, 0, 0, 0.25);
+  color: var(--text);
+  font: inherit;
+  font-size: 0.82rem;
+  color-scheme: dark;
+}
+
+.appointment-set,
+.appointment-clear {
+  flex: 0 0 auto;
+  border: 1px solid rgba(102, 232, 255, 0.42);
+  border-radius: 6px;
+  padding: 0.45rem 0.7rem;
+  background: rgba(102, 232, 255, 0.13);
+  color: var(--cyan);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.appointment-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.appointment-status[hidden] {
+  display: none;
+}
+
+.appointment-countdown {
+  margin-top: 0.18rem;
+  color: var(--amber);
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.appointment-message {
+  margin-top: 0.45rem;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.appointment-panel.has-appointment .appointment-form,
+.appointment-panel.has-appointment .appointment-message {
+  display: none;
+}
+
+body.is-alerting {
+  cursor: pointer;
+}
+
+body.is-alerting .app-background {
+  animation: appointment-alert 0.7s steps(1, end) infinite;
+}
+
+body.is-alerting .appointment-panel {
+  border-color: var(--alert);
+}
+
+body.is-alerting .appointment-date::after {
+  content: " · タップして停止";
+  color: #ff8a82;
+}
+
+@keyframes appointment-alert {
+  0%, 100% { background: #b51d15; }
+  50% { background: #070a0f; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.is-alerting .app-background {
+    animation-duration: 1.4s;
+  }
 }
 
 .date-panel {
@@ -314,6 +419,11 @@ body {
 
   .calendar-panel {
     padding: 0.58rem;
+  }
+
+  .appointment-panel {
+    min-height: 4.4rem;
+    padding: 0.55rem 0.7rem;
   }
 
   .gmt-panel {

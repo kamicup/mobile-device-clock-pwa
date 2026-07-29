@@ -25,6 +25,24 @@
         <div id="local-time" class="local-time">--:--:--</div>
       </section>
 
+      <section id="appointment-panel" class="appointment-panel" aria-label="次の予定">
+        <form id="appointment-form" class="appointment-form">
+          <label class="appointment-label" for="appointment-time">次の予定</label>
+          <div class="appointment-controls">
+            <input id="appointment-time" class="appointment-input" type="datetime-local" required>
+            <button class="appointment-set" type="submit">登録</button>
+          </div>
+        </form>
+        <div id="appointment-status" class="appointment-status" hidden>
+          <div>
+            <div id="appointment-date" class="appointment-date"></div>
+            <div id="appointment-countdown" class="appointment-countdown">--:--:--</div>
+          </div>
+          <button id="appointment-clear" class="appointment-clear" type="button">クリア</button>
+        </div>
+        <div id="appointment-message" class="appointment-message" role="status">予定時刻を登録してください</div>
+      </section>
+
       <section class="calendar-panel" aria-label="今月のカレンダー">
         <div class="calendar-head">
           <div id="calendar-title" class="calendar-title">----</div>
