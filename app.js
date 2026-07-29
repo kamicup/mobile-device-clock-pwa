@@ -9,10 +9,21 @@
   var calendarTitleEl = document.getElementById("calendar-title");
   var calendarWeekdaysEl = document.getElementById("calendar-weekdays");
   var calendarGridEl = document.getElementById("calendar-grid");
+  var appointmentPanelEl = document.getElementById("appointment-panel");
+  var appointmentFormEl = document.getElementById("appointment-form");
+  var appointmentTimeEl = document.getElementById("appointment-time");
+  var appointmentStatusEl = document.getElementById("appointment-status");
+  var appointmentDateEl = document.getElementById("appointment-date");
+  var appointmentCountdownEl = document.getElementById("appointment-countdown");
+  var appointmentMessageEl = document.getElementById("appointment-message");
+  var appointmentClearEl = document.getElementById("appointment-clear");
+  var APPOINTMENT_KEY = "mobile-clock-appointment";
 
   var state = {
     locale: getLocale(),
-    renderedMonthKey: ""
+    renderedMonthKey: "",
+    appointmentTime: loadAppointment(),
+    alerting: false
   };
 
   function setAppHeight() {
@@ -40,6 +51,87 @@
 
   function pad(value) {
     return value < 10 ? "0" + value : String(value);
+  }
+
+  function loadAppointment() {
+    var stored;
+    try {
+      stored = Number(window.localStorage.getItem(APPOINTMENT_KEY));
+    } catch (error) {
+      return null;
+    }
+    return isFinite(stored) && stored > 0 ? stored : null;
+  }
+
+  function saveAppointment(value) {
+    try {
+      if (value) {
+        window.localStorage.setItem(APPOINTMENT_KEY, String(value));
+      } else {
+        window.localStorage.removeItem(APPOINTMENT_KEY);
+      }
+    } catch (error) {
+      // The countdown still works for this session when storage is unavailable.
+    }
+  }
+
+  function parseLocalDateTime(value) {
+    var parts = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+    var date;
+    if (!parts) {
+      return null;
+    }
+    date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), Number(parts[4]), Number(parts[5]), 0, 0);
+    return isNaN(date.getTime()) ? null : date;
+  }
+
+  function formatAppointment(date) {
+    try {
+      return new Intl.DateTimeFormat(state.locale, {
+        year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+      }).format(date);
+    } catch (error) {
+      return date.getFullYear() + "/" + pad(date.getMonth() + 1) + "/" + pad(date.getDate()) + " " + pad(date.getHours()) + ":" + pad(date.getMinutes());
+    }
+  }
+
+  function formatRemaining(milliseconds) {
+    var seconds = Math.max(0, Math.ceil(milliseconds / 1000));
+    var days = Math.floor(seconds / 86400);
+    var hours = Math.floor((seconds % 86400) / 3600);
+    var minutes = Math.floor((seconds % 3600) / 60);
+    var remainder = seconds % 60;
+    return (days ? days + "日 " : "") + pad(hours) + ":" + pad(minutes) + ":" + pad(remainder);
+  }
+
+  function clearAppointment() {
+    state.appointmentTime = null;
+    state.alerting = false;
+    saveAppointment(null);
+    document.body.classList.remove("is-alerting");
+    appointmentPanelEl.classList.remove("has-appointment");
+    appointmentStatusEl.hidden = true;
+    appointmentTimeEl.value = "";
+    appointmentMessageEl.textContent = "予定時刻を登録してください";
+  }
+
+  function updateAppointment(now) {
+    var remaining;
+    if (!state.appointmentTime) {
+      return;
+    }
+    appointmentPanelEl.classList.add("has-appointment");
+    appointmentStatusEl.hidden = false;
+    appointmentDateEl.textContent = formatAppointment(new Date(state.appointmentTime));
+    remaining = state.appointmentTime - now.getTime();
+    appointmentCountdownEl.textContent = formatRemaining(remaining);
+    if (remaining <= 0) {
+      appointmentCountdownEl.textContent = "予定時刻です";
+      if (!state.alerting) {
+        state.alerting = true;
+        document.body.classList.add("is-alerting");
+      }
+    }
   }
 
   function getFirstDayOfWeek(locale) {
@@ -205,7 +297,29 @@
     gmtDateEl.textContent = gmtDate(now);
     gmtTimeEl.textContent = gmtTime(now);
     renderCalendar(now);
+    updateAppointment(now);
   }
+
+  appointmentFormEl.addEventListener("submit", function (event) {
+    var appointment;
+    event.preventDefault();
+    appointment = parseLocalDateTime(appointmentTimeEl.value);
+    if (!appointment || appointment.getTime() <= Date.now()) {
+      appointmentMessageEl.textContent = "現在より後の時刻を指定してください";
+      return;
+    }
+    state.appointmentTime = appointment.getTime();
+    state.alerting = false;
+    saveAppointment(state.appointmentTime);
+    updateAppointment(new Date());
+  });
+
+  appointmentClearEl.addEventListener("click", clearAppointment);
+  document.body.addEventListener("click", function () {
+    if (state.alerting) {
+      clearAppointment();
+    }
+  });
 
   setAppHeight();
   tick();
