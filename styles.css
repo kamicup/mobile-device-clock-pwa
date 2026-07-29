@@ -27,7 +27,7 @@ body {
   height: 100%;
   min-height: 100%;
   overflow-x: hidden;
-  overflow: hidden;
+  overflow-y: auto;
   background: var(--bg) !important;
 }
 
@@ -44,7 +44,8 @@ body {
   min-height: 100vh;
   min-height: var(--paint-height);
   overflow-x: hidden;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   background-color: var(--bg) !important;
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -79,7 +80,7 @@ body {
   min-height: var(--app-height);
   margin: 0 auto;
   overflow-x: hidden;
-  overflow: hidden;
+  overflow-y: visible;
   padding: calc(constant(safe-area-inset-top) + 1rem) 0.88rem calc(constant(safe-area-inset-bottom) + 1rem);
   padding: calc(env(safe-area-inset-top) + 1rem) 0.88rem calc(env(safe-area-inset-bottom) + 1rem);
   display: flex;
