@@ -34,10 +34,17 @@
       </section>
 
       <section id="appointment-panel" class="appointment-panel" aria-label="次の予定">
-        <form id="appointment-form" class="appointment-form">
-          <label class="appointment-label" for="appointment-time">次の予定</label>
+        <form id="appointment-form" class="appointment-form" novalidate>
+          <span class="appointment-label">次の予定</span>
           <div class="appointment-controls">
-            <input id="appointment-time" class="appointment-input" type="datetime-local" required>
+            <label class="appointment-field">
+              <span class="visually-hidden">予定日</span>
+              <input id="appointment-date-input" class="appointment-input appointment-date-input" type="date" required>
+            </label>
+            <label class="appointment-field appointment-time-field">
+              <span class="visually-hidden">予定時刻</span>
+              <input id="appointment-time-input" class="appointment-input" type="time" step="60" required>
+            </label>
             <button class="appointment-set" type="submit">登録</button>
           </div>
         </form>

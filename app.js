@@ -11,7 +11,8 @@
   var calendarGridEl = document.getElementById("calendar-grid");
   var appointmentPanelEl = document.getElementById("appointment-panel");
   var appointmentFormEl = document.getElementById("appointment-form");
-  var appointmentTimeEl = document.getElementById("appointment-time");
+  var appointmentDateInputEl = document.getElementById("appointment-date-input");
+  var appointmentTimeInputEl = document.getElementById("appointment-time-input");
   var appointmentStatusEl = document.getElementById("appointment-status");
   var appointmentDateEl = document.getElementById("appointment-date");
   var appointmentCountdownEl = document.getElementById("appointment-countdown");
@@ -75,14 +76,38 @@
     }
   }
 
-  function parseLocalDateTime(value) {
-    var parts = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+  function parseLocalDateTime(dateValue, timeValue) {
+    // iOS 12's combined datetime-local control can return a value shifted by
+    // the time-zone offset. Separate date and time controls keep the selected
+    // local fields intact; combine those fields without parsing an ISO string.
+    var dateParts = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var timeParts = String(timeValue).match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);
     var date;
-    if (!parts) {
+    if (!dateParts || !timeParts) {
       return null;
     }
-    date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), Number(parts[4]), Number(parts[5]), 0, 0);
-    return isNaN(date.getTime()) ? null : date;
+    date = new Date(
+      Number(dateParts[1]),
+      Number(dateParts[2]) - 1,
+      Number(dateParts[3]),
+      Number(timeParts[1]),
+      Number(timeParts[2]),
+      Number(timeParts[3] || 0),
+      0
+    );
+
+    // The multi-argument Date constructor normalizes impossible dates, so
+    // compare all fields to reject values such as February 31.
+    if (isNaN(date.getTime()) ||
+        date.getFullYear() !== Number(dateParts[1]) ||
+        date.getMonth() !== Number(dateParts[2]) - 1 ||
+        date.getDate() !== Number(dateParts[3]) ||
+        date.getHours() !== Number(timeParts[1]) ||
+        date.getMinutes() !== Number(timeParts[2]) ||
+        date.getSeconds() !== Number(timeParts[3] || 0)) {
+      return null;
+    }
+    return date;
   }
 
   function formatAppointment(date) {
@@ -112,7 +137,8 @@
     appointmentPanelEl.classList.remove("has-appointment");
     appointmentStatusEl.setAttribute("hidden", "hidden");
     appointmentStatusEl.setAttribute("aria-hidden", "true");
-    appointmentTimeEl.value = "";
+    appointmentDateInputEl.value = "";
+    appointmentTimeInputEl.value = "";
     appointmentMessageEl.textContent = "予定時刻を登録してください";
   }
 
@@ -307,8 +333,12 @@
   appointmentFormEl.addEventListener("submit", function (event) {
     var appointment;
     event.preventDefault();
-    appointment = parseLocalDateTime(appointmentTimeEl.value);
-    if (!appointment || appointment.getTime() <= Date.now()) {
+    appointment = parseLocalDateTime(appointmentDateInputEl.value, appointmentTimeInputEl.value);
+    if (!appointment) {
+      appointmentMessageEl.textContent = "有効な予定時刻を指定してください";
+      return;
+    }
+    if (appointment.getTime() <= Date.now()) {
       appointmentMessageEl.textContent = "現在より後の時刻を指定してください";
       return;
     }

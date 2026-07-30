@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  var CACHE_NAME = "mobile-clock-v10";
+  var CACHE_NAME = "mobile-clock-v12";
   var ASSETS = [
     "./",
     "./index.html",

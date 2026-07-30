@@ -121,6 +121,27 @@ body {
   margin-top: 0.4rem;
 }
 
+.appointment-field {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.appointment-time-field {
+  flex: 0 1 6.5rem;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
 .appointment-input {
   min-width: 0;
   flex: 1 1 auto;
@@ -132,6 +153,10 @@ body {
   font: inherit;
   font-size: 0.82rem;
   color-scheme: dark;
+}
+
+.appointment-date-input {
+  width: 100%;
 }
 
 .appointment-set,
