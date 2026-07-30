@@ -76,13 +76,39 @@
   }
 
   function parseLocalDateTime(value) {
-    var parts = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/);
+    // Older iOS WebKit can include seconds (and, depending on the selected
+    // value, fractional seconds) in a datetime-local value. Accept every
+    // representation produced by the control instead of relying on Date's
+    // browser-dependent string parser.
+    var parts = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/);
     var date;
+    var milliseconds;
     if (!parts) {
       return null;
     }
-    date = new Date(Number(parts[1]), Number(parts[2]) - 1, Number(parts[3]), Number(parts[4]), Number(parts[5]), 0, 0);
-    return isNaN(date.getTime()) ? null : date;
+    milliseconds = parts[7] ? Number((parts[7] + "00").slice(0, 3)) : 0;
+    date = new Date(
+      Number(parts[1]),
+      Number(parts[2]) - 1,
+      Number(parts[3]),
+      Number(parts[4]),
+      Number(parts[5]),
+      Number(parts[6] || 0),
+      milliseconds
+    );
+
+    // The multi-argument Date constructor normalizes impossible dates, so
+    // compare all fields to reject values such as February 31.
+    if (isNaN(date.getTime()) ||
+        date.getFullYear() !== Number(parts[1]) ||
+        date.getMonth() !== Number(parts[2]) - 1 ||
+        date.getDate() !== Number(parts[3]) ||
+        date.getHours() !== Number(parts[4]) ||
+        date.getMinutes() !== Number(parts[5]) ||
+        date.getSeconds() !== Number(parts[6] || 0)) {
+      return null;
+    }
+    return date;
   }
 
   function formatAppointment(date) {
@@ -308,7 +334,11 @@
     var appointment;
     event.preventDefault();
     appointment = parseLocalDateTime(appointmentTimeEl.value);
-    if (!appointment || appointment.getTime() <= Date.now()) {
+    if (!appointment) {
+      appointmentMessageEl.textContent = "有効な予定時刻を指定してください";
+      return;
+    }
+    if (appointment.getTime() <= Date.now()) {
       appointmentMessageEl.textContent = "現在より後の時刻を指定してください";
       return;
     }
