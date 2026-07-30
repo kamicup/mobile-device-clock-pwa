@@ -11,7 +11,8 @@
   var calendarGridEl = document.getElementById("calendar-grid");
   var appointmentPanelEl = document.getElementById("appointment-panel");
   var appointmentFormEl = document.getElementById("appointment-form");
-  var appointmentTimeEl = document.getElementById("appointment-time");
+  var appointmentDateInputEl = document.getElementById("appointment-date-input");
+  var appointmentTimeInputEl = document.getElementById("appointment-time-input");
   var appointmentStatusEl = document.getElementById("appointment-status");
   var appointmentDateEl = document.getElementById("appointment-date");
   var appointmentCountdownEl = document.getElementById("appointment-countdown");
@@ -75,37 +76,35 @@
     }
   }
 
-  function parseLocalDateTime(value) {
-    // Older iOS WebKit can include seconds (and, depending on the selected
-    // value, fractional seconds) in a datetime-local value. Accept every
-    // representation produced by the control instead of relying on Date's
-    // browser-dependent string parser.
-    var parts = String(value).match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/);
+  function parseLocalDateTime(dateValue, timeValue) {
+    // iOS 12's combined datetime-local control can return a value shifted by
+    // the time-zone offset. Separate date and time controls keep the selected
+    // local fields intact; combine those fields without parsing an ISO string.
+    var dateParts = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    var timeParts = String(timeValue).match(/^(\d{2}):(\d{2})(?::(\d{2}))?$/);
     var date;
-    var milliseconds;
-    if (!parts) {
+    if (!dateParts || !timeParts) {
       return null;
     }
-    milliseconds = parts[7] ? Number((parts[7] + "00").slice(0, 3)) : 0;
     date = new Date(
-      Number(parts[1]),
-      Number(parts[2]) - 1,
-      Number(parts[3]),
-      Number(parts[4]),
-      Number(parts[5]),
-      Number(parts[6] || 0),
-      milliseconds
+      Number(dateParts[1]),
+      Number(dateParts[2]) - 1,
+      Number(dateParts[3]),
+      Number(timeParts[1]),
+      Number(timeParts[2]),
+      Number(timeParts[3] || 0),
+      0
     );
 
     // The multi-argument Date constructor normalizes impossible dates, so
     // compare all fields to reject values such as February 31.
     if (isNaN(date.getTime()) ||
-        date.getFullYear() !== Number(parts[1]) ||
-        date.getMonth() !== Number(parts[2]) - 1 ||
-        date.getDate() !== Number(parts[3]) ||
-        date.getHours() !== Number(parts[4]) ||
-        date.getMinutes() !== Number(parts[5]) ||
-        date.getSeconds() !== Number(parts[6] || 0)) {
+        date.getFullYear() !== Number(dateParts[1]) ||
+        date.getMonth() !== Number(dateParts[2]) - 1 ||
+        date.getDate() !== Number(dateParts[3]) ||
+        date.getHours() !== Number(timeParts[1]) ||
+        date.getMinutes() !== Number(timeParts[2]) ||
+        date.getSeconds() !== Number(timeParts[3] || 0)) {
       return null;
     }
     return date;
@@ -138,7 +137,8 @@
     appointmentPanelEl.classList.remove("has-appointment");
     appointmentStatusEl.setAttribute("hidden", "hidden");
     appointmentStatusEl.setAttribute("aria-hidden", "true");
-    appointmentTimeEl.value = "";
+    appointmentDateInputEl.value = "";
+    appointmentTimeInputEl.value = "";
     appointmentMessageEl.textContent = "予定時刻を登録してください";
   }
 
@@ -333,7 +333,7 @@
   appointmentFormEl.addEventListener("submit", function (event) {
     var appointment;
     event.preventDefault();
-    appointment = parseLocalDateTime(appointmentTimeEl.value);
+    appointment = parseLocalDateTime(appointmentDateInputEl.value, appointmentTimeInputEl.value);
     if (!appointment) {
       appointmentMessageEl.textContent = "有効な予定時刻を指定してください";
       return;
