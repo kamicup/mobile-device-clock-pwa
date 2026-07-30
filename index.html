@@ -34,10 +34,10 @@
       </section>
 
       <section id="appointment-panel" class="appointment-panel" aria-label="次の予定">
-        <form id="appointment-form" class="appointment-form">
+        <form id="appointment-form" class="appointment-form" novalidate>
           <label class="appointment-label" for="appointment-time">次の予定</label>
           <div class="appointment-controls">
-            <input id="appointment-time" class="appointment-input" type="datetime-local" required>
+            <input id="appointment-time" class="appointment-input" type="datetime-local" step="any" required>
             <button class="appointment-set" type="submit">登録</button>
           </div>
         </form>
